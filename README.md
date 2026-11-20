@@ -93,7 +93,11 @@ Chaque station ajoutée crée un appareil avec ses capteurs :
 
 ## Carte Lovelace
 
-La carte est fournie avec l'intégration. Déclarez-la comme ressource
+La carte est fournie avec l'intégration. **Après avoir installé l'intégration
+et redémarré Home Assistant**, l'intégration enregistre elle-même le chemin
+statique `/wallonie_hydro/wallonie-hydro-card.js` auprès du serveur HTTP de HA.
+
+Déclarez-la comme ressource
 (`Paramètres → Tableaux de bord → ⋮ → Ressources`) :
 
 ```yaml
@@ -101,10 +105,26 @@ url: /wallonie_hydro/wallonie-hydro-card.js
 type: module
 ```
 
-> Avec l'installation HACS, la ressource est ajoutée automatiquement si vous
-> activez « Lovelace » dans les paramètres du dépôt HACS. L'URL
-> `/local/wallonie_hydro/wallonie-hydro-card.js` fonctionne aussi si vous
-> copiez le fichier `www/wallonie-hydro-card.js` dans votre dossier `config/www/wallonie_hydro/`.
+> ⚠️ Important : la ressource n'est **pas** ajoutée automatiquement, même via
+> HACS — c'est une carte embarquée dans une intégration, pas un dépôt HACS de
+> type « Lovelace ». L'enregistrement manuel ci-dessus est obligatoire.
+>
+> Vérifiez que le fichier est bien servi : ouvrez dans votre navigateur
+> `http://<votre-ha>:8123/wallonie_hydro/wallonie-hydro-card.js` — vous devez
+> voir le code JavaScript de la carte. Si vous obtenez une erreur 404,
+> redémarrez Home Assistant (l'enregistrement du chemin a lieu au chargement
+> de l'intégration) et vérifiez que l'intégration Wallonie Hydro est bien
+> présente dans `Paramètres → Appareils et services`.
+
+> Alternative sans chemin statique : copiez le fichier
+> `custom_components/wallonie_hydro/www/wallonie-hydro-card.js` dans votre
+> dossier `config/www/wallonie_hydro/` et utilisez l'URL
+> `/local/wallonie_hydro/wallonie-hydro-card.js` à la place.
+
+**Une fois la ressource déclarée**, vous devez **rafraîchir entièrement** votre
+navigateur (Ctrl+Shift+R / Cmd+Shift+R) pour que HA charge le module JS et
+enregistre le custom element `wallonie-hydro-card`. Sans ce rafraîchissement,
+la carte n'apparaîtra pas dans le sélecteur de type de carte.
 
 Puis dans un tableau de bord (mode YAML) :
 

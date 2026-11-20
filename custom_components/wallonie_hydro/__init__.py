@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -13,6 +14,25 @@ from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN, PLATFO
 from .coordinator import WallonieHydroCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
+# Chemin statique servant le fichier de la carte Lovelace. Enregistré une seule
+# fois : permet à HA de répondre à /wallonie_hydro/wallonie-hydro-card.js sans
+# que l'utilisateur ait à copier le fichier dans config/www/.
+WWW_DIR = Path(__file__).parent / "www"
+CARD_FILE = WWW_DIR / "wallonie-hydro-card.js"
+CARD_URL = "/wallonie_hydro/wallonie-hydro-card.js"
+
+
+async def _register_static_paths(hass: HomeAssistant) -> None:
+    """Enregistre le chemin statique de la carte Lovelace (idempotent)."""
+    if hass.data[DOMAIN].get("static_registered"):
+        return
+
+    # Sert le fichier carte exact que la ressource Lovelace charge.
+    hass.http.register_static_path(CARD_URL, str(CARD_FILE), cache_headers=False)
+
+    hass.data[DOMAIN]["static_registered"] = True
+    _LOGGER.info("Carte Lovelace servie sur %s", CARD_URL)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -34,6 +54,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    # Chemin statique pour la carte Lovelace (une seule fois)
+    await _register_static_paths(hass)
 
     # Service WebSocket pour la carte Lovelace (une seule fois)
     from . import websocket_api
