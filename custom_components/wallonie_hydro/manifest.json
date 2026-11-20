@@ -1,7 +1,7 @@
 {
   "domain": "wallonie_hydro",
   "name": "Wallonie Hydro (hydrometrie.wallonie.be)",
-  "codeowners": ["@zcode"],
+  "codeowners": ["@sh4rknado"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/zcode/wallonie-hydro",
