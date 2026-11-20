@@ -4,6 +4,10 @@ Intégration Home Assistant pour surveiller la **hauteur d'eau** et le **débit*
 
 Conçue et testée avec la station **Givry (L6710) sur la Trouille**, elle fonctionne avec les **320 stations de hauteur** et **287 stations de débit** du réseau wallon (Meuse, Sambre, Semois, Ourthe, Lesse, Trouille, etc.).
 
+[![Ajouter ce dépôt à HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=zcode&repository=wallonie-hydro&category=integration)
+
+> **Note** : le bouton ci-dessus pointe vers le dépôt GitHub `zcode/wallonie-hydro`. Si vous hébergez ce dépôt sous un autre nom, remplacez `owner=zcode` et `repository=wallonie-hydro` par vos valeurs (ou utilisez la procédure manuelle ci-dessous).
+
 ## Fonctionnalités
 
 - 🌊 **Capteur hauteur d'eau** (m) — série temps réel 10 min, identique à la valeur affichée sur le portail
@@ -20,16 +24,42 @@ Conçue et testée avec la station **Givry (L6710) sur la Trouille**, elle fonct
 
 ### HACS (recommandé)
 
-1. Ajoutez ce dépôt dans HACS : `HACS → ⋮ → Dépôts personnalisés`
-   - URL : l'URL de ce dépôt GitHub
-   - Catégorie : **Intégration**
-2. `HACS → Intégrations → Wallonie Hydro → Télécharger`
+**Option A — en un clic (bouton « Add to Home Assistant »)**
+
+1. Cliquez sur le bouton bleu en haut de ce README : ![hacs_repository](https://my.home-assistant.io/badges/hacs_repository.svg)
+2. Confirmez l'ouverture de `my.home-assistant.io` : la page « Ajouter un dépôt » s'ouvre avec l'URL et la catégorie **Intégration** déjà pré-remplies.
+3. Cliquez sur **Soumettre**, puis suivez les étapes 2-4 de l'option B.
+
+> Le bouton nécessite que « My Home Assistant » soit actif sur votre instance
+> (le lien redirige automatiquement). S'il ne fonctionne pas, utilisez l'option B.
+
+**Option B — dépôt personnalisé (manuel)**
+
+1. Dans Home Assistant : `HACS → ⋮ (en haut à droite) → Dépôts personnalisés`
+2. Renseignez :
+   - **URL du dépôt** : `https://github.com/zcode/wallonie-hydro` *(l'URL de ce dépôt GitHub)*
+   - **Type / Catégorie** : **Intégration**
+3. Cliquez sur **Ajouter** — « Wallonie Hydro » apparaît dans la liste des intégrations HACS.
+4. `HACS → Intégrations → Wallonie Hydro → Télécharger`, puis choisissez la version **1.0.0**.
+5. **Redémarrez Home Assistant** (Paramètres → Système → Alimentation → Redémarrer).
+
+### Manuel (sans HACS)
+
+1. Copiez le dossier `custom_components/wallonie_hydro/` de ce dépôt dans le dossier `config/custom_components/` de votre installation :
+
+   ```
+   config/
+   └── custom_components/
+       └── wallonie_hydro/
+           ├── __init__.py
+           ├── api.py
+           ├── manifest.json
+           ├── ...
+           └── www/wallonie-hydro-card.js
+   ```
+
+2. Pour la carte Lovelace, copiez aussi `www/wallonie-hydro-card.js` dans `config/www/wallonie_hydro/` (voir la section « Carte Lovelace »).
 3. Redémarrez Home Assistant.
-
-### Manuel
-
-Copiez le dossier `custom_components/wallonie_hydro/` dans le dossier
-`config/custom_components/` de votre installation, puis redémarrez.
 
 ## Configuration
 
