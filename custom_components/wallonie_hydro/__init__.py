@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -26,10 +27,11 @@ CARD_URL = "/wallonie_hydro/wallonie-hydro-card.js"
 async def _register_static_paths(hass: HomeAssistant) -> None:
     """Enregistre le chemin statique de la carte Lovelace (idempotent).
 
-    La signature de l'API HTTP de HA a évolué entre versions : on gère les
-    deux formes pour rester compatible. Le log HA a confirmé que cette
-    instance expose ``async_register_static_paths`` (pas l'ancienne
-    ``register_static_path``), d'où l'AttributeError rencontrée.
+    L'API moderne (HA >= 2024.7) est ``async_register_static_paths`` et attend
+    une collection d'objets ``StaticPathConfig`` (dataclass avec champs
+    ``url_path``, ``path``, ``cache_headers``). L'ancienne API synchrone
+    ``register_static_path`` est conservée comme fallback pour les versions
+    antérieures.
     """
     if hass.data[DOMAIN].get("static_registered"):
         return
@@ -37,10 +39,10 @@ async def _register_static_paths(hass: HomeAssistant) -> None:
     http = hass.http
     registered = False
 
-    # Forme moderne (HA >= 2024.7) : liste de (url_path, file_path).
+    # Forme moderne (HA >= 2024.7) : collection de StaticPathConfig.
     if hasattr(http, "async_register_static_paths"):
         await http.async_register_static_paths(
-            [(CARD_URL, str(CARD_FILE))]
+            [StaticPathConfig(CARD_URL, str(CARD_FILE), cache_headers=False)]
         )
         registered = True
     # Forme plus ancienne : méthode synchrone par chemin.
