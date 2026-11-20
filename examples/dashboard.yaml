@@ -1,0 +1,69 @@
+# Exemple de tableau de bord complet — Trouille à Givry
+# (mode YAML : Paramètres → Tableaux de bord → ⋮ → Éditeur RAW)
+title: Trouille
+views:
+  - title: Givry (L6710)
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: custom:wallonie-hydro-card
+            station: L6710
+            name: Trouille à Givry
+            hours: 48
+            show_discharge: true
+            thresholds:
+              warn: 0.8
+              alert: 1.2
+              high: 1.8
+      - type: grid
+        columns: 2
+        cards:
+          - type: gauge
+            entity: sensor.givry_hauteur_d_eau
+            name: Hauteur
+            min: 0
+            max: 3
+            severity:
+              green: 0
+              yellow: 0.8
+              red: 1.2
+          - type: gauge
+            entity: sensor.givry_debit
+            name: Débit
+            min: 0
+            max: 30
+            severity:
+              green: 0
+              yellow: 15
+              red: 22
+      - type: grid
+        columns: 2
+        cards:
+          - type: tile
+            entity: binary_sensor.givry_vigilance
+            name: Vigilance
+            color: orange
+          - type: tile
+            entity: binary_sensor.givry_alerte
+            name: Alerte
+            color: red
+          - type: tile
+            entity: sensor.givry_tendance_hauteur
+            name: Tendance
+            icon: mdi:trending-up
+          - type: entities
+            title: Détails
+            entities:
+              - entity: sensor.givry_hauteur_d_eau
+                secondary_info: last-changed
+              - entity: sensor.givry_debit
+                secondary_info: last-changed
+              - type: attribute
+                entity: sensor.givry_hauteur_d_eau
+                attribute: change_24h_value
+                name: Variation 24 h (m)
+              - type: attribute
+                entity: sensor.givry_hauteur_d_eau
+                attribute: last_measurement
+                name: Dernière mesure

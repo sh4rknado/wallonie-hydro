@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Station hydrométrique wallonne",
+        "description": "Indiquez le numéro de la station à surveiller (ex. L6710 pour Givry sur la Trouille).\n\nLa liste complète des {nb_stations} stations est disponible sur hydrometrie.wallonie.be.",
+        "data": {
+          "station_no": "Numéro de station (ex. L6710)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre hydrometrie.wallonie.be. Vérifiez la connexion Internet puis réessayez.",
+      "invalid_station": "Station introuvable. Vérifiez le numéro sur hydrometrie.wallonie.be (cliquez une station sur la carte : le numéro apparaît dans l'URL).",
+      "no_series": "Cette station ne publie pas de mesure de hauteur ou de débit (station inactive ou pluviométrique). Choisissez une station active sur la carte du portail.",
+      "api_error": "Erreur renvoyée par le service KIWIS du SPW. Réessayez plus tard.",
+      "levels_order": "Les seuils doivent être croissants : vigilance < alerte < crue."
+    },
+    "abort": {
+      "already_configured": "Cette station est déjà configurée."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options de la station",
+        "description": "Ajustez la fréquence de mise à jour et les seuils de hauteur (m) utilisés par les capteurs binaires d'alerte. Les seuils doivent être croissants.",
+        "data": {
+          "update_interval": "Intervalle de mise à jour (minutes)",
+          "warn_level": "Seuil de vigilance (m)",
+          "alert_level": "Seuil d'alerte (m)",
+          "high_level": "Seuil de crue (m)"
+        }
+      }
+    },
+    "error": {
+      "levels_order": "Les seuils doivent être croissants : vigilance < alerte < crue."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "water_level": {
+        "name": "Hauteur d'eau {station_name}",
+        "state": {
+          "unavailable": "Indisponible"
+        }
+      },
+      "discharge": {
+        "name": "Débit {station_name}"
+      },
+      "water_level_tendency": {
+        "name": "Tendance hauteur {station_name}"
+      },
+      "discharge_tendency": {
+        "name": "Tendance débit {station_name}"
+      }
+    },
+    "binary_sensor": {
+      "warn_level": {
+        "name": "Vigilance hauteur {station_name}"
+      },
+      "alert_level": {
+        "name": "Alerte hauteur {station_name}"
+      },
+      "high_level": {
+        "name": "Crue {station_name}"
+      }
+    }
+  }
+}

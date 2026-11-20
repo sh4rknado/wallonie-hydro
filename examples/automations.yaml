@@ -1,0 +1,95 @@
+# Automatisations prêtes à l'emploi — Trouille à Givry (L6710)
+# Copiez le contenu dans automations.yaml ou via l'éditeur YAML.
+
+# 1. Notification immédiate au franchissement du seuil de vigilance
+- alias: "Trouille - Passage en vigilance"
+  id: trouille_vigilance
+  description: "Notifie quand la hauteur de la Trouille à Givry dépasse 0,8 m."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.givry_hauteur_d_eau
+      above: 0.8
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "🌊 Trouille — vigilance"
+        message: >
+          La hauteur de la Trouille à Givry vient de dépasser 0,8 m
+          ({{ states('sensor.givry_hauteur_d_eau') }} m,
+          {{ state_attr('sensor.givry_hauteur_d_eau', 'change_1h_value') | float(0) | round(2) }} m sur la dernière heure).
+    - service: notify.mobile_app_mon_telephone
+      data:
+        title: "🌊 Trouille — vigilance"
+        message: >
+          Hauteur {{ states('sensor.givry_hauteur_d_eau') }} m à Givry.
+        data:
+          link: "https://hydrometrie.wallonie.be/home/observations/hauteur.html?mode=graph&station=DCENN%2FL6710&topic=H-hr"
+  mode: single
+
+# 2. Alerte forte : seuil de crue + confirmation de la tendance
+- alias: "Trouille - Alerte crue (seuil + montée rapide)"
+  id: trouille_crue
+  description: "Notifie quand la hauteur dépasse 1,8 m OU monte de plus de 30 cm/h."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.givry_hauteur_d_eau
+      above: 1.8
+    - platform: numeric_state
+      entity_id: sensor.givry_tendance_hauteur
+      above: 0.3
+  action:
+    - service: notify.mobile_app_mon_telephone
+      data:
+        title: "🚨 Trouille — alerte crue"
+        message: >
+          {{ states('sensor.givry_hauteur_d_eau') }} m à Givry,
+          débit {{ states('sensor.givry_debit') }} m³/s,
+          tendance {{ states('sensor.givry_tendance_hauteur') }} m/h.
+          Surveillez la situation : https://hydrometrie.wallonie.be
+        data:
+          push:
+            interruption-level: time-sensitive
+  mode: single
+
+# 3. Synthèse matinale
+- alias: "Trouille - Synthèse du matin"
+  id: trouille_matin
+  trigger:
+    - platform: time
+      at: "07:30:00"
+  condition:
+    - condition: time
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
+  action:
+    - service: notify.mobile_app_mon_telephone
+      data:
+        title: "🌊 Point hydro — Trouille à Givry"
+        message: >
+          Hauteur : {{ states('sensor.givry_hauteur_d_eau') }} m ·
+          Débit : {{ states('sensor.givry_debit') }} m³/s ·
+          Variation 24 h : {{ state_attr('sensor.givry_hauteur_d_eau', 'change_24h_value') | float(0) | round(2) }} m
+  mode: single
+
+# 4. Retour à la normale
+- alias: "Trouille - Niveau revenu à la normale"
+  id: trouille_normal
+  description: "Notifie la fin de vigilance (hauteur redescendue sous 0,7 m pendant 1 h)."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.givry_hauteur_d_eau
+      below: 0.7
+      for:
+        hours: 1
+  action:
+    - service: notify.mobile_app_mon_telephone
+      data:
+        title: "✅ Trouille — situation normale"
+        message: "La hauteur à Givry est redescendue sous 0,7 m depuis une heure."
+  mode: single

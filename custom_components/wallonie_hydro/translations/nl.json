@@ -1,0 +1,67 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Hydrometrisch station in Wallonië",
+        "description": "Voer het nummer in van het station dat u wilt opvolgen (bijv. L6710 voor Givry op de Trouille).\n\nDe volledige lijst van {nb_stations} stations is beschikbaar op hydrometrie.wallonie.be.",
+        "data": {
+          "station_no": "Stationnummer (bijv. L6710)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan hydrometrie.wallonie.be niet bereiken. Controleer uw internetverbinding en probeer opnieuw.",
+      "invalid_station": "Station niet gevonden. Controleer het nummer op hydrometrie.wallonie.be (klik op een station op de kaart: het nummer verschijnt in de URL).",
+      "no_series": "Dit station publiceert geen waterhoogte of debiet (inactief of enkel neerslag). Kies een actief station op de portaal kaart.",
+      "api_error": "Fout van de KIWIS-service van de SPW. Probeer later opnieuw.",
+      "levels_order": "De drempels moeten toenemen: waakzaamheid < alarm < overstroming."
+    },
+    "abort": {
+      "already_configured": "Dit station is al geconfigureerd."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Stationsopties",
+        "description": "Pas de update-interval en de drempels (m) gebruikt door de meldingssensoren aan. De drempels moeten toenemen.",
+        "data": {
+          "update_interval": "Update-interval (minuten)",
+          "warn_level": "Waakzaamheidsdrempel (m)",
+          "alert_level": "Alarmdrempel (m)",
+          "high_level": "Overstromingsdrempel (m)"
+        }
+      }
+    },
+    "error": {
+      "levels_order": "De drempels moeten toenemen: waakzaamheid < alarm < overstroming."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "water_level": {
+        "name": "Waterhoogte {station_name}"
+      },
+      "discharge": {
+        "name": "Debiet {station_name}"
+      },
+      "water_level_tendency": {
+        "name": "Hoogtetendens {station_name}"
+      },
+      "discharge_tendency": {
+        "name": "Debiettendens {station_name}"
+      }
+    },
+    "binary_sensor": {
+      "warn_level": {
+        "name": "Hoogte waakzaamheid {station_name}"
+      },
+      "alert_level": {
+        "name": "Hoogte alarm {station_name}"
+      },
+      "high_level": {
+        "name": "Overstroming {station_name}"
+      }
+    }
+  }
+}

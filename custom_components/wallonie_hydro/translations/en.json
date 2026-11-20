@@ -1,0 +1,67 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Walloon hydrometric station",
+        "description": "Enter the station number to monitor (e.g. L6710 for Givry on the Trouille river).\n\nThe full list of {nb_stations} stations is available on hydrometrie.wallonie.be.",
+        "data": {
+          "station_no": "Station number (e.g. L6710)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach hydrometrie.wallonie.be. Check your Internet connection and try again.",
+      "invalid_station": "Station not found. Check the number on hydrometrie.wallonie.be (click a station on the map: the number appears in the URL).",
+      "no_series": "This station does not publish water level or discharge (inactive or rain-gauge only). Pick an active station on the portal map.",
+      "api_error": "Error returned by the SPW KIWIS service. Try again later.",
+      "levels_order": "Thresholds must be increasing: warn < alert < flood."
+    },
+    "abort": {
+      "already_configured": "This station is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Station options",
+        "description": "Adjust the update interval and the level thresholds (m) used by the alert binary sensors. Thresholds must be increasing.",
+        "data": {
+          "update_interval": "Update interval (minutes)",
+          "warn_level": "Watch level (m)",
+          "alert_level": "Alert level (m)",
+          "high_level": "Flood level (m)"
+        }
+      }
+    },
+    "error": {
+      "levels_order": "Thresholds must be increasing: warn < alert < flood."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "water_level": {
+        "name": "Water level {station_name}"
+      },
+      "discharge": {
+        "name": "Discharge {station_name}"
+      },
+      "water_level_tendency": {
+        "name": "Level tendency {station_name}"
+      },
+      "discharge_tendency": {
+        "name": "Discharge tendency {station_name}"
+      }
+    },
+    "binary_sensor": {
+      "warn_level": {
+        "name": "Level watch {station_name}"
+      },
+      "alert_level": {
+        "name": "Level alert {station_name}"
+      },
+      "high_level": {
+        "name": "Flood {station_name}"
+      }
+    }
+  }
+}
