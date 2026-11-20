@@ -69,9 +69,11 @@ class WallonieHydroSensorBase(CoordinatorEntity, SensorEntity):
             f" ({self._station_no})",
             manufacturer=MANUFACTURER,
             model="Station hydrométrique",
-            configuration_url=f"{SOURCE_NAME.replace('https://', 'https://')}"
-            f"/home/observations/hauteur.html?mode=graph&station="
-            f"{self._station_no}&topic=H-hr",
+            configuration_url=(
+                f"https://{SOURCE_NAME}"
+                f"/home/observations/hauteur.html?mode=graph&station="
+                f"{self._station_no}&topic=H-hr"
+            ),
         )
 
 

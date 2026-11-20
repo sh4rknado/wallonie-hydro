@@ -24,12 +24,39 @@ CARD_URL = "/wallonie_hydro/wallonie-hydro-card.js"
 
 
 async def _register_static_paths(hass: HomeAssistant) -> None:
-    """Enregistre le chemin statique de la carte Lovelace (idempotent)."""
+    """Enregistre le chemin statique de la carte Lovelace (idempotent).
+
+    La signature de l'API HTTP de HA a évolué entre versions : on gère les
+    deux formes pour rester compatible. Le log HA a confirmé que cette
+    instance expose ``async_register_static_paths`` (pas l'ancienne
+    ``register_static_path``), d'où l'AttributeError rencontrée.
+    """
     if hass.data[DOMAIN].get("static_registered"):
         return
 
-    # Sert le fichier carte exact que la ressource Lovelace charge.
-    hass.http.register_static_path(CARD_URL, str(CARD_FILE), cache_headers=False)
+    http = hass.http
+    registered = False
+
+    # Forme moderne (HA >= 2024.7) : liste de (url_path, file_path).
+    if hasattr(http, "async_register_static_paths"):
+        await http.async_register_static_paths(
+            [(CARD_URL, str(CARD_FILE))]
+        )
+        registered = True
+    # Forme plus ancienne : méthode synchrone par chemin.
+    elif hasattr(http, "register_static_path"):
+        http.register_static_path(CARD_URL, str(CARD_FILE), cache_headers=False)
+        registered = True
+
+    if not registered:
+        _LOGGER.warning(
+            "Aucune API d'enregistrement de chemin statique trouvée sur cette "
+            "version de Home Assistant ; la carte Lovelace ne sera pas servie "
+            "sur %s. Copiez le fichier custom_components/wallonie_hydro/www/"
+            "wallonie-hydro-card.js dans config/www/wallonie_hydro/ et "
+            "utilisez l'URL /local/wallonie_hydro/wallonie-hydro-card.js.",
+            CARD_URL,
+        )
 
     hass.data[DOMAIN]["static_registered"] = True
     _LOGGER.info("Carte Lovelace servie sur %s", CARD_URL)
