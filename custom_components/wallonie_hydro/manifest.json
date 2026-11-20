@@ -1,13 +1,13 @@
 {
   "domain": "wallonie_hydro",
   "name": "Wallonie Hydro (hydrometrie.wallonie.be)",
-  "codeowners": ["@zcode"],
+  "codeowners": ["@sh4rknado"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/zcode/wallonie-hydro",
+  "documentation": "https://github.com/sh4rknado/wallonie-hydro",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/zcode/wallonie-hydro/issues",
+  "issue_tracker": "https://github.com/sh4rknado/wallonie-hydro/issues",
   "requirements": [],
   "single_config_entry": false,
   "version": "1.0.0"
